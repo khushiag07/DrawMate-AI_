@@ -1,0 +1,615 @@
+/* ==========================================
+   PROFILE PAGE
+========================================== */
+
+.profile-page {
+    max-width: 1450px;
+    width: 95%;
+    margin: 0 auto;
+    padding: 20px 0 60px;
+}
+
+.profile-title {
+    text-align: center;
+    font-family: Georgia, serif;
+    font-size: 42px;
+    color: #3b2a1a;
+    margin-bottom: 35px;
+}
+
+/* ==========================================
+   GRID
+========================================== */
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 330px 1fr 320px;
+    gap: 28px;
+    align-items: start;
+}
+
+/* ==========================================
+   PAPER CARD
+========================================== */
+
+.profile-card {
+
+    position: relative;
+
+    background: #fcf8f3;
+
+    border-radius: 28px;
+
+    border: 2px solid rgba(210,185,160,.45);
+
+    padding: 26px;
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,.12),
+        inset 0 2px 3px rgba(255,255,255,.7);
+
+    transition: .25s;
+}
+
+.profile-card:hover{
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 18px 36px rgba(0,0,0,.16),
+        inset 0 2px 3px rgba(255,255,255,.7);
+
+}
+
+/* ==========================================
+   PUSH PIN
+========================================== */
+
+.pin{
+
+    position:absolute;
+
+    width:18px;
+    height:18px;
+
+    border-radius:50%;
+
+    top:-10px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    box-shadow:
+        0 5px 8px rgba(0,0,0,.25);
+
+}
+
+.pin.red{
+
+    background:
+    radial-gradient(circle at 30% 30%,
+    #ff8b72,
+    #d64b43);
+
+}
+
+.pin::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:4px;
+    height:12px;
+
+    background:#555;
+
+    left:7px;
+    top:10px;
+
+    transform:rotate(18deg);
+
+}
+
+/* ==========================================
+   CARD TITLES
+========================================== */
+
+.profile-card h2{
+
+    font-family:Georgia,serif;
+
+    font-size:24px;
+
+    color:#322113;
+
+    margin-bottom:20px;
+
+}
+
+/* ==========================================
+   COLUMN SIZES
+========================================== */
+
+.personal-card{
+
+    min-height:760px;
+
+}
+
+.featured-card{
+
+    min-height:760px;
+
+}
+
+.skill-card{
+
+    min-height:330px;
+
+}
+
+.achievement-card{
+
+    margin-top:25px;
+
+    min-height:330px;
+
+}
+
+.activity-card{
+
+    margin-top:25px;
+
+    min-height:430px;
+
+}
+/* ==========================================
+   PERSONAL CARD
+========================================== */
+
+.profile-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 5px solid #ffffff;
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.18);
+
+    margin-bottom: 18px;
+}
+
+.profile-user h3 {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: #3b2a1a;
+    margin-bottom: 6px;
+}
+
+.profile-user p {
+    color: #8a7567;
+    font-size: 16px;
+}
+
+.profile-description {
+
+    margin-top: 25px;
+
+    line-height: 1.8;
+
+    font-size: 15px;
+
+    color: #5f5045;
+
+    text-align: center;
+
+}
+
+.joined {
+
+    margin-top: 22px;
+
+    text-align: center;
+
+    color: #947a67;
+
+    font-weight: 600;
+
+}
+
+/* Divider */
+
+.personal-card hr{
+
+    margin:28px 0;
+
+    border:none;
+
+    border-top:1px solid #eadfce;
+
+}
+
+/* ==========================================
+   STATS
+========================================== */
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px;
+
+    margin-top:18px;
+
+}
+
+.stats-grid div{
+
+    background:#fffdf9;
+
+    border:1px solid #eadfce;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    text-align:center;
+
+    transition:.25s;
+
+}
+
+.stats-grid div:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+
+}
+
+.stats-grid h4{
+
+    font-size:14px;
+
+    color:#866c5b;
+
+    margin-bottom:10px;
+
+    font-weight:500;
+
+}
+
+.stats-grid span{
+
+    display:block;
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#8d5630;
+
+}
+/* ==========================================
+   FEATURED PROJECTS
+========================================== */
+
+.featured-card{
+    display:flex;
+    flex-direction:column;
+}
+
+.featured-grid{
+
+    margin-top:25px;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
+
+}
+
+/* Each artwork */
+
+.project{
+
+    position:relative;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    border:1px solid #eadfce;
+
+    box-shadow:
+        0 6px 16px rgba(0,0,0,.08);
+
+    transition:.25s;
+
+    cursor:pointer;
+
+}
+
+.project:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 14px 28px rgba(0,0,0,.14);
+
+}
+
+.project img{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+/* High voted label */
+
+.project span{
+
+    position:absolute;
+
+    top:12px;
+
+    left:12px;
+
+    background:#8d5630;
+
+    color:white;
+
+    padding:7px 14px;
+
+    font-size:12px;
+
+    border-radius:999px;
+
+    font-weight:600;
+
+    box-shadow:0 5px 12px rgba(0,0,0,.15);
+
+}
+
+/* Username */
+
+.project::after{
+
+    content:"@ArtisticSoul_01";
+
+    display:block;
+
+    padding:15px;
+
+    background:#fff;
+
+    color:#4d3827;
+
+    font-weight:600;
+
+    text-align:center;
+
+}
+
+/* ==========================================
+   FEATURED TITLE
+========================================== */
+
+.featured-card h2{
+
+    text-align:center;
+
+    margin-bottom:5px;
+
+}
+/* ==========================================
+   SKILL CARD
+========================================== */
+
+.skill-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.skill-item {
+    margin-bottom: 28px;
+}
+
+.skill-item span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 15px;
+    font-weight: 600;
+    color: #3b2a1a;
+
+    margin-bottom: 10px;
+}
+
+.progress {
+    width: 100%;
+    height: 12px;
+
+    background: #efe4d7;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.08);
+}
+
+.progress div {
+    height: 100%;
+
+    border-radius: 999px;
+
+    background: linear-gradient(
+        90deg,
+        #d8a06b,
+        #8d5630
+    );
+
+    transition: width .4s ease;
+}
+
+/* ==========================================
+   ACHIEVEMENTS
+========================================== */
+
+.badge-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2,1fr);
+
+    gap: 18px;
+
+    margin-top: 20px;
+
+}
+
+.badge {
+
+    background: #fffdf9;
+
+    border: 1px solid #eadfce;
+
+    border-radius: 18px;
+
+    padding: 22px 15px;
+
+    text-align: center;
+
+    transition: .25s;
+
+    cursor: pointer;
+
+}
+
+.badge:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow: 0 12px 22px rgba(0,0,0,.10);
+
+}
+
+.badge svg {
+
+    width: 34px;
+
+    height: 34px;
+
+    color: #8d5630;
+
+    margin-bottom: 12px;
+
+}
+
+.badge p {
+
+    color: #5b4635;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+/* Emoji version if not using icons */
+
+.badge {
+
+    font-size: 34px;
+
+}
+
+.badge p {
+
+    margin-top: 10px;
+
+}
+/* ==========================================
+   ACTIVITY
+========================================== */
+
+.activity-list{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-top:20px;
+}
+
+.activity-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px;
+    background:#fffdf9;
+    border:1px solid #eadfce;
+    border-radius:16px;
+    transition:.25s;
+}
+
+.activity-item:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+
+.activity-icon{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#f5ebe1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+    flex-shrink:0;
+}
+
+.activity-info{
+    flex:1;
+}
+
+.activity-info h4{
+    margin:0;
+    color:#3b2a1a;
+    font-size:15px;
+}
+
+.activity-info span{
+    color:#8a7567;
+    font-size:13px;
+}
+
+.activity-time{
+    font-size:12px;
+    color:#a08b78;
+    white-space:nowrap;
+}

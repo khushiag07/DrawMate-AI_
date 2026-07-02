@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+chromadb
+sentence-transformers
+wikipedia
+beautifulsoup4
+requestsh
+ollama
+python-multipart
