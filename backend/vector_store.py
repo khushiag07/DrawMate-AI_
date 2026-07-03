@@ -33,7 +33,7 @@ def add_knowledge(text: str, source: str):
     return len(chunks)
 
 
-def search_knowledge(query: str, n_results: int = 5):
+def search_knowledge(query: str, n_results: int = 3):
     query_embedding = model.encode(query).tolist()
 
     results = collection.query(
@@ -51,6 +51,12 @@ def search_knowledge(query: str, n_results: int = 5):
 
     for doc, meta in zip(documents, metadatas):
         source = meta.get("source", "unknown")
-        final_context.append(f"Source: {source}\nContent: {doc}")
+        book = meta.get("book", "Unknown Book")
+
+        final_context.append(
+            f"Book: {book}\n"
+            f"Source: {source}\n"
+            f"Content:\n{doc}"
+        )
 
     return "\n\n---\n\n".join(final_context)

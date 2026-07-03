@@ -12,6 +12,7 @@ from roadmap_agent import generate_roadmap
 from challenge_agent import generate_challenge
 from master_agent import run_master_agent
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 
 
@@ -91,13 +92,14 @@ def learn_from_url(request: UrlRequest):
 @app.post("/ask")
 def ask(request: AskRequest):
 
-    answer = drawmate_agent(
-        request.question
-    )
+    result = drawmate_agent(request.question)
+
+    result = drawmate_agent(request.question)
 
     return {
         "question": request.question,
-        "answer": answer
+        "lesson": result["lesson"],
+        "image_prompt": result["image_prompt"]
     }
 @app.post("/breakdown")
 def breakdown(request: BreakdownRequest):
@@ -154,3 +156,8 @@ def chat(request: ChatRequest):
         "message": request.message,
         "response": response
     }
+app.mount(
+    "/generated",
+    StaticFiles(directory="generated"),
+    name="generated"
+)
