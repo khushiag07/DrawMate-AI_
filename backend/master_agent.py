@@ -1,20 +1,31 @@
+from intent_classifier import classify_intent
+
+from chat_agent import chat_with_drawmate
 from tutor_agent import ask_drawmate
-from breakdown_agent import create_drawing_breakdown
 from roadmap_agent import generate_roadmap
 from challenge_agent import generate_challenge
+from breakdown_agent import create_drawing_breakdown
 
 
 def run_master_agent(message: str):
-    text = message.lower()
 
-    if "breakdown" in text or "break down" in text:
-        topic = message.replace("breakdown", "").replace("break down", "").strip()
-        return create_drawing_breakdown(topic)
+    intent = classify_intent(message)
 
-    if "roadmap" in text or "learn" in text or "master" in text:
+    print("Intent:", intent)
+
+    if intent == "chat":
+        return chat_with_drawmate(message)
+
+    if intent == "drawing":
+        return ask_drawmate(message)
+
+    if intent == "roadmap":
         return generate_roadmap(message)
 
-    if "challenge" in text or "practice task" in text or "daily task" in text:
+    if intent == "challenge":
         return generate_challenge()
 
-    return ask_drawmate(message)
+    if intent == "breakdown":
+        return create_drawing_breakdown(message)
+
+    return chat_with_drawmate(message)

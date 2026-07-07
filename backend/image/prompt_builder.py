@@ -1,25 +1,28 @@
-def build_flux_prompt(topic: str, steps: str) -> str:
+def build_step_prompt(topic, title, description):
+
     return f"""
-Create a professional educational drawing tutorial.
+Create an educational drawing tutorial image.
 
 Subject:
 {topic}
 
-Drawing Steps:
-{steps}
+Current Stage:
+{title}
 
-Requirements:
+Instruction:
+{description}
 
-- White paper background
-- Black pencil sketch
-- Four numbered panels
-- Clean line art
-- Educational
-- Beginner friendly
-- No colors
-- No extra decorations
-- Each panel must clearly show the next drawing step.
-- Looks like a page from a professional drawing book.
+Style Requirements:
 
-Generate one single tutorial image.
+• White paper
+• Black graphite pencil
+• Clean line art
+• Beginner drawing textbook
+• Educational illustration
+• Construction lines visible
+• No colors
+• No background
+• No artistic effects
+• Highly detailed
+• Only draw this stage
 """

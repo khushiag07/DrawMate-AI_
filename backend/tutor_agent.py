@@ -6,7 +6,44 @@ from chat_memory import (
     save_chat,
     get_chat_context
 )
-from image.image_agent import generate_tutorial_image
+from image.image_agent import generate_step_images
+import os
+
+SCHEMA = """
+{
+  "type": "lesson",
+  "goal": "",
+  "materials": [],
+  "difficulty": "",
+  "generate_images": true,
+
+
+  "milestones": [
+    {
+      "title": "",
+      "description": ""
+    },
+    {
+      "title": "",
+      "description": ""
+    },
+    {
+      "title": "",
+      "description": ""
+    },
+    {
+      "title": "",
+      "description": ""
+    }
+  ],
+
+  "steps": [],
+  "tips": [],
+  "mistakes": [],
+  "practice": "",
+  "next_lesson": ""
+}
+"""
 
 def ask_drawmate(question: str) :
     context = search_knowledge(question)
@@ -39,18 +76,19 @@ If the retrieved knowledge is poor, use your own drawing knowledge.
 
 Return ONLY valid JSON.
 
-Use exactly this schema:
+Generate EXACTLY 4 milestones.
 
-{{
-  "goal": "",
-  "materials": [],
-  "difficulty": "",
-  "steps": [],
-  "tips": [],
-  "mistakes": [],
-  "practice": "",
-  "next_lesson": ""
-}}
+Each milestone should represent one important stage of the drawing process.
+
+The milestones should build naturally from start to finish.
+
+Each milestone description should be less than 30 words.
+
+The response must follow this JSON schema exactly.
+
+Schema:
+
+{SCHEMA}
 
 Rules:
 
@@ -58,9 +96,54 @@ Rules:
 - tips must be an array.
 - mistakes must be an array.
 - materials must be an array.
-- Do not return markdown.
-- Do not wrap the JSON in ```.
+- milestones must contain exactly 4 objects.
+- Return ONLY JSON.
+- Do NOT include markdown.
+- Do NOT wrap the response inside ```.
+First determine the user's intent.
 
+If the user is greeting, chatting, thanking you, asking about yourself,
+or asking a non-drawing question:
+
+Return:
+
+{{
+  "type": "chat",
+  "reply": "...",
+  "generate_images": false
+}}
+
+If the user is asking to learn drawing, sketching, anatomy, shading,
+perspective, painting, or any art topic:
+
+Return:
+
+{{
+  "type": "lesson",
+  ...
+}}
+Image Rules:
+
+- If the user wants to learn drawing or needs visual guidance, set
+  "generate_images": true.
+
+Examples:
+- Draw an eye
+- Teach me perspective
+- How to draw a cat
+- Draw anime hair
+- Show me shading
+- Sketch a rose
+
+For greetings or normal conversation, set
+"generate_images": false.
+
+Examples:
+- Hi
+- Hello
+- Who are you?
+- Thank you
+- What's your name?
 Retrieved Knowledge:
 {context}
 
@@ -87,29 +170,70 @@ User Question:
 
     try:
         lesson = json.loads(raw_answer)
-        
+        if lesson.get("type") == "chat":
+
+            save_chat(
+                question,
+                lesson.get("reply", "")
+            )
+
+            return {
+                "type": "chat",
+                "reply": lesson.get("reply", ""),
+                "images": []
+            }
     except Exception:
         lesson = {
-            "goal": "",
+            "goal": "Drawing Lesson",
             "materials": [],
-            "difficulty": "",
+            "difficulty": "Unknown",
+            "generate_images": False,
+            "milestones": [],
             "steps": [],
             "tips": [],
             "mistakes": [],
             "practice": raw_answer,
             "next_lesson": ""
         }
-    steps = lesson.get("steps", [])
 
-    if not isinstance(steps, list):
-        steps = [str(steps)]
+    milestones = lesson.get("milestones", [])
 
-    steps_text = "\n".join(steps)
+    if not milestones:
+        milestones = [
+            {
+                "title": "Basic Shape",
+                "description": f"Draw the basic construction of {question}."
+            },
+            {
+                "title": "Main Outline",
+                "description": f"Add the main outline of {question}."
+            },
+            {
+                "title": "Details",
+                "description": f"Add important details to {question}."
+            },
+            {
+                "title": "Final Drawing",
+                "description": f"Finish and shade the {question}."
+            }
+        ]
+    generate_images = lesson.get("generate_images", False)
 
-    image_path = generate_tutorial_image(
-        question,
-        steps_text
-    )
+    image_paths = []
+
+    if generate_images:
+        try:
+            image_paths = generate_step_images(
+                question,
+                milestones
+            )
+        except Exception as e:
+            print("Image Generation Error:", e)
+
+    image_urls = [
+        f"http://localhost:8000/{path.replace(os.sep, '/')}"
+        for path in image_paths
+    ]
 
     save_chat(
         question,
@@ -117,6 +241,7 @@ User Question:
     )
 
     return {
+        "type": "lesson",
         "lesson": lesson,
-        "image_path": image_path
-    }
+        "images": image_urls
+}

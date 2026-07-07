@@ -13,7 +13,10 @@ from challenge_agent import generate_challenge
 from master_agent import run_master_agent
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-
+from image.cleanup import cleanup_old_images, limit_cache_size
+from fastapi import UploadFile, File, Form
+from community.upload_post import upload_post
+from community.get_posts import get_posts
 
 
 
@@ -50,6 +53,11 @@ class ChallengeRequest(BaseModel):
     topic: str
 class ChatRequest(BaseModel):
     message: str
+
+
+@app.get("/community/posts")
+def community_posts():
+    return get_posts()
 
 @app.get("/")
 def home():
@@ -94,12 +102,9 @@ def ask(request: AskRequest):
 
     result = drawmate_agent(request.question)
 
-    result = drawmate_agent(request.question)
-
     return {
         "question": request.question,
         "lesson": result["lesson"],
-        "image_prompt": result["image_prompt"]
     }
 @app.post("/breakdown")
 def breakdown(request: BreakdownRequest):
@@ -161,3 +166,24 @@ app.mount(
     StaticFiles(directory="generated"),
     name="generated"
 )
+@app.on_event("startup")
+async def startup_event():
+    cleanup_old_images()
+    limit_cache_size()
+
+@app.post("/community/upload")
+async def community_upload(
+    image: UploadFile = File(...),
+    username: str = Form(...),
+    caption: str = Form(...)
+):
+    post = upload_post(
+        image,
+        username,
+        caption
+    )
+
+    return {
+        "success": True,
+        "post": post
+    }

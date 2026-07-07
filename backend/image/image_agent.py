@@ -1,13 +1,9 @@
 import os
 import requests
+from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 
-from image.prompt_builder import build_flux_prompt
-from image.image_cache import (
-    get_image_path,
-    image_exists,
-)
-from image.image_utils import save_image
+from image.prompt_builder import build_step_prompt
 
 load_dotenv()
 
@@ -19,28 +15,53 @@ HEADERS = {
     "Authorization": f"Bearer {HF_TOKEN}"
 }
 
+OUTPUT_FOLDER = "generated"
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-def generate_tutorial_image(topic, steps):
 
-    prompt = build_flux_prompt(topic, steps)
+def generate_single_image(topic, milestone, index):
 
-    path = get_image_path(prompt)
-
-    if image_exists(prompt):
-        return path
+    prompt = build_step_prompt(
+        topic,
+        milestone["title"],
+        milestone["description"]
+    )
 
     response = requests.post(
         API_URL,
         headers=HEADERS,
-        json={
-            "inputs": prompt
-        },
+        json={"inputs": prompt},
         timeout=180
     )
 
     if response.status_code != 200:
-        raise Exception(response.text)
+        return None
 
-    save_image(response.content, path)
+    filename = f"{topic.replace(' ','_')}_{index}.png"
+
+    path = os.path.join(
+        OUTPUT_FOLDER,
+        filename
+    )
+
+    with open(path, "wb") as f:
+        f.write(response.content)
 
     return path
+
+
+def generate_step_images(topic, milestones):
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+
+        futures = [
+            executor.submit(
+                generate_single_image,
+                topic,
+                milestone,
+                i + 1
+            )
+            for i, milestone in enumerate(milestones)
+        ]
+
+    return [f.result() for f in futures if f.result()]
