@@ -1,5 +1,5 @@
-import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import { Bot, User } from "lucide-react";
 import { Message } from "../../types/chat";
 import MessageActions from "./MessageActions";
@@ -9,82 +9,116 @@ interface Props {
   message: Message;
 }
 
-export default function ChatMessage({
-  message,
-}: Props) {
+export default function ChatMessage({ message }: Props) {
   const isUser = message.role === "user";
 
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        duration: 0.25,
-      }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25 }}
       className={`flex gap-5 ${
-        isUser
-          ? "justify-end"
-          : "justify-start"
+        isUser ? "justify-end" : "justify-start"
       }`}
     >
+      {/* Assistant Avatar */}
+
       {!isUser && (
-        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#8B5A2B] to-[#C99B63] flex items-center justify-center text-white shadow-lg shrink-0">
-          <Bot size={20}/>
+        <div
+          className="
+          w-11
+          h-11
+          rounded-full
+          bg-gradient-to-br
+          from-[#A46D3D]
+          to-[#7A4C26]
+          text-white
+          flex
+          items-center
+          justify-center
+          shrink-0
+          shadow-lg
+          "
+        >
+          <Bot size={20} />
         </div>
       )}
 
+      {/* Bubble */}
+
       <div
         className={`
-        max-w-4xl
-        rounded-[26px]
+        max-w-[95%] lg:max-w-[85%]
+        rounded-[24px]
         px-6
-        py-5
-        shadow-md
-        transition
+        py-4
+        shadow-sm
         ${
           isUser
-            ? "bg-[#D7B287] text-black"
-            : "bg-white border border-stone-200"
+            ? "bg-[#B57A47] text-white rounded-br-md"
+            : "bg-white border border-[#E8DACB] rounded-bl-md"
         }
-        `}
+      `}
       >
         {message.isStreaming ? (
           <TypingIndicator />
         ) : (
-          <ReactMarkdown>
-            {message.content}
-          </ReactMarkdown>
+          <div
+  className="
+  prose
+  prose-stone
+  max-w-none
+  leading-7
+  text-[14px]
+  text-[#3D342C]
+  "
+>
+  <ReactMarkdown>{message.content}</ReactMarkdown>
+</div>
         )}
 
         {message.images?.length ? (
           <div className="grid grid-cols-2 gap-4 mt-5">
-            {message.images.map((img,index)=>(
+            {message.images.map((img, i) => (
               <img
-                key={index}
+                key={i}
                 src={img}
-                className="rounded-xl shadow hover:scale-[1.02] transition"
+                alt=""
+                className="
+                rounded-xl
+                border
+                border-[#E5D6C6]
+                "
               />
             ))}
           </div>
         ) : null}
 
-        {!message.isStreaming &&
-          !isUser && (
-            <MessageActions
-              text={message.content}
-            />
+        {!isUser && !message.isStreaming && (
+          <div className="mt-5">
+            <MessageActions text={message.content} />
+          </div>
         )}
       </div>
 
+      {/* User Avatar */}
+
       {isUser && (
-        <div className="w-11 h-11 rounded-full bg-[#2F3136] text-white flex items-center justify-center shadow-lg shrink-0">
-          <User size={20}/>
+        <div
+          className="
+          w-11
+          h-11
+          rounded-full
+          bg-[#2F3137]
+          text-white
+          flex
+          items-center
+          justify-center
+          shrink-0
+          shadow-lg
+          "
+        >
+          <User size={18} />
         </div>
       )}
     </motion.div>

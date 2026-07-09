@@ -1,10 +1,14 @@
 import {
   Plus,
-  Search,
   MessageSquare,
-  Clock,
+  Compass,
+  Image,
+  BookOpen,
+  Trophy,
+  Users,
   Settings,
-  LogOut,
+  History,
+  Palette,
 } from "lucide-react";
 
 import { useChatStore } from "../../stores/chatStore";
@@ -18,85 +22,86 @@ export default function Sidebar() {
   return (
     <aside
       className="
-      w-[360px]
+      w-[300px]
       h-[760px]
-      bg-[#FBF7F1]
-border border-[#E8D9C8]
-      rounded-[30px]
-      shadow-2xl
+      bg-[#F5EFE7]
+      rounded-[28px]
+      border
+      border-[#E6D8C9]
+      shadow-[0_12px_35px_rgba(0,0,0,.08)]
       flex
       flex-col
       overflow-hidden
-    "
+      "
     >
-      {/* Header */}
+      {/* Logo */}
 
-      <div className="px-7 pt-7 pb-5">
+      <div className="px-7 pt-7 pb-6 border-b border-[#E5D7C8]">
 
-        <h1 className="text-3xl font-bold text-[#8B5A2B]">
-          DrawMate
-        </h1>
+        <div className="flex items-center gap-3">
 
-        <p className="text-gray-500 mt-1">
-          Your AI Drawing Tutor
-        </p>
+          <div className="w-11 h-11 rounded-2xl bg-[#9C673B] flex items-center justify-center text-white">
+            <Palette size={20} />
+          </div>
 
-      </div>
+          <div>
+            <h2 className="font-bold text-xl text-[#2E2218]">
+              DrawMate
+            </h2>
 
-      {/* New Chat */}
-
-      <div className="px-6">
-
-        <button
-          onClick={createChat}
-          className="
-          w-full
-          h-14
-          rounded-2xl
-          bg-[#99632F]
-          text-white
-          text-lg
-          font-semibold
-          flex
-          items-center
-          justify-center
-          gap-3
-          hover:bg-[#7E4D24]
-          transition
-        "
-        >
-          <Plus size={20} />
-
-          New Chat
-        </button>
-
-      </div>
-
-      {/* Search */}
-
-      <div className="px-6 mt-5">
-
-        <div className="h-12 rounded-xl bg-white border flex items-center px-4 gap-3">
-
-          <Search
-            size={18}
-            className="text-gray-500"
-          />
-
-          <input
-            placeholder="Search chats..."
-            className="flex-1 bg-transparent outline-none"
-          />
+            <p className="text-sm text-[#7E6D5C]">
+              AI Studio
+            </p>
+          </div>
 
         </div>
 
       </div>
 
-      {/* Chats */}
+      {/* New Chat */}
 
-      <div className="flex-1 overflow-y-auto px-5 mt-6">
+      <div className="p-6">
 
-        <p className="text-sm font-semibold text-gray-500 mb-4">
+        <button
+          onClick={createChat}
+          className="
+          w-full
+          h-12
+          rounded-2xl
+          bg-[#A16A3B]
+          text-white
+          flex
+          items-center
+          justify-center
+          gap-3
+          font-medium
+          hover:bg-[#8B5A2B]
+          transition
+          "
+        >
+          <Plus size={18} />
+          New Chat
+        </button>
+
+      </div>
+
+      {/* Features */}
+
+      <div className="px-5 space-y-2">
+
+        <SidebarItem icon={<Compass size={18} />} text="Explore" />
+        <SidebarItem icon={<BookOpen size={18} />} text="Learn Drawing" />
+        <SidebarItem icon={<Image size={18} />} text="Generate Art" />
+        <SidebarItem icon={<Trophy size={18} />} text="Challenges" />
+        <SidebarItem icon={<Users size={18} />} text="Community" />
+
+      </div>
+
+      {/* History */}
+
+      <div className="flex-1 overflow-y-auto mt-7 px-5">
+
+        <p className="text-xs uppercase tracking-widest text-[#8C7B6B] mb-4">
           Recent Chats
         </p>
 
@@ -115,18 +120,19 @@ border border-[#E8D9C8]
               px-4
               py-3
               rounded-2xl
+              text-left
               transition
               ${
                 activeChatId === chat.id
-                  ? "bg-[#E7D1B3]"
-                  : "hover:bg-[#F1E7D9]"
+                  ? "bg-[#E6D4BF]"
+                  : "hover:bg-[#EFE5D8]"
               }
-            `}
+              `}
             >
 
-              <MessageSquare size={18} />
+              <MessageSquare size={16} />
 
-              <span className="truncate">
+              <span className="truncate text-[15px]">
                 {chat.title}
               </span>
 
@@ -140,22 +146,10 @@ border border-[#E8D9C8]
 
       {/* Bottom */}
 
-      <div className="border-t p-5 space-y-2">
+      <div className="border-t border-[#E5D7C8] p-5 space-y-2">
 
-        <SidebarButton
-          icon={<Clock size={18} />}
-          text="History"
-        />
-
-        <SidebarButton
-          icon={<Settings size={18} />}
-          text="Settings"
-        />
-
-        <SidebarButton
-          icon={<LogOut size={18} />}
-          text="Logout"
-        />
+        <SidebarItem icon={<History size={18} />} text="History" />
+        <SidebarItem icon={<Settings size={18} />} text="Settings" />
 
       </div>
 
@@ -163,26 +157,30 @@ border border-[#E8D9C8]
   );
 }
 
-function SidebarButton({
-  icon,
-  text,
-}: {
+interface Props {
   icon: React.ReactNode;
   text: string;
-}) {
+}
+
+function SidebarItem({
+  icon,
+  text,
+}: Props) {
   return (
     <button
       className="
       w-full
       h-12
-      rounded-xl
+      rounded-2xl
       flex
       items-center
       gap-4
       px-4
-      hover:bg-[#F1E7D9]
-      transition
-    "
+      text-[#3C3026]
+      hover:bg-[#ECE2D5]
+      transition-all
+      duration-200
+      "
     >
       {icon}
 

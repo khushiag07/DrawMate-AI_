@@ -23,7 +23,17 @@ return(
 
 <button
 onClick={copy}
-className="hover:text-[#8B5A2B]"
+className="
+w-9
+h-9
+rounded-xl
+bg-[#F5EFE7]
+hover:bg-[#ECE2D5]
+transition
+flex
+items-center
+justify-center
+"
 >
 <Copy size={18}/>
 </button>

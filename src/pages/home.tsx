@@ -32,21 +32,31 @@ const askDrawMate = () => {
   setQuestion("");
 };
   if (chatMode) {
-    return (
-      <div className="w-full h-[calc(100vh-90px)] px-6 py-5">
-        <div className="flex h-full gap-8">
-          <div className="w-[340px] shrink-0">
-            <Sidebar />
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <ChatArea />
-          </div>
-        </div>
+  return (
+    <div
+      className="
+      w-full
+      max-w-[1500px]
+      mx-auto
+      px-6
+      pt-6
+      flex
+      gap-8
+      items-start
+      "
+    >
+      {/* Sidebar */}
+      <div className="w-[320px] flex-shrink-0">
+        <Sidebar />
       </div>
-    );
-  }
 
+      {/* Chat */}
+      <div className="flex-1">
+        <ChatArea />
+      </div>
+    </div>
+  );
+}
   return (
     <div className="home-page">
 
@@ -150,7 +160,7 @@ const askDrawMate = () => {
       <Sidebar />
     </div>
 
-    <div className="flex-1">
+    <div className="flex-1 max-w-[1040px]">
       <ChatArea />
     </div>
 
