@@ -1,5 +1,7 @@
 import { useState } from "react";
 import "./community.css";
+import { useEffect } from "react";
+import axios from "axios";
 
 interface ArtItem {
     id: number;
@@ -17,29 +19,32 @@ export default function CommunityGallery() {
     const [activeMedium, setActiveMedium] = useState<string>("Digital Pencil");
     const [activeSort, setActiveSort] = useState<string>("Recent");
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const [artworks, setArtworks] = useState<any[]>([]);
+    const API = "http://localhost:8000";
 
-    const artworks: ArtItem[] = [
-        { id: 1, title: "Dragon Study", creator: "SketchyPro", avatar: "🐲", style: "Line", medium: "Digital Pencil", likes: 142, svgType: "dragon" },
-        { id: 2, title: "Dragon Study", creator: "WatercolorWitch", avatar: "🧙‍♀️", style: "Painting", medium: "Watercolor", likes: 89, svgType: "dragon" },
-        { id: 3, title: "Kyoto Alley", creator: "LinsArtMaster", avatar: "🎋", style: "Line", medium: "Digital Pencil", likes: 210, svgType: "alleys" },
-        { id: 4, title: "Portrait Study", creator: "LineArtMaster", avatar: "🎨", style: "Line", medium: "Digital Pencil", likes: 175, svgType: "girl" },
-        { id: 5, title: "Portrait Study", creator: "LineArtMaster", avatar: "🎨", style: "Line", medium: "Digital Pencil", likes: 165, svgType: "girl" },
-        { id: 6, title: "Landscape Study", creator: "WatercolorWitch", avatar: "🧙‍♀️", style: "Painting", medium: "Watercolor", likes: 312, svgType: "nature" },
+useEffect(() => {
 
-        { id: 7, title: "Landscape Study", creator: "WatercolorWitch", avatar: "🧙‍♀️", style: "Painting", medium: "Watercolor", likes: 250, svgType: "nature" },
-        { id: 8, title: "Portrait Study", creator: "LineArtMaster", avatar: "🎨", style: "Line", medium: "Digital Pencil", likes: 120, svgType: "girl" },
-        { id: 9, title: "Portrait Study", creator: "SketchyPro", avatar: "🐲", style: "Line", medium: "Digital Pencil", likes: 98, svgType: "girl" },
-        { id: 10, title: "Portrait Study", creator: "LineArtMaster", avatar: "🎨", style: "Line", medium: "Digital Pencil", likes: 135, svgType: "girl" },
-        { id: 11, title: "Landscape Study", creator: "WatercolorWitch", avatar: "🧙‍♀️", style: "Painting", medium: "Watercolor", likes: 220, svgType: "nature" },
-        { id: 12, title: "Landscape Study", creator: "WatercolorWitch", avatar: "🧙‍♀️", style: "Painting", medium: "Watercolor", likes: 180, svgType: "nature" },
+    loadPosts();
 
-        { id: 13, title: "Landscape Study", creator: "LineArtMaster", avatar: "🎨", style: "Line", medium: "Digital Pencil", likes: 115, svgType: "nature" },
-        { id: 14, title: "Dragon Study", creator: "WatercolorWitch", avatar: "🧙‍♀️", style: "Hybrid", medium: "Marker", likes: 95, svgType: "dragon" },
-        { id: 15, title: "Dragon Study", creator: "SketchyPro", avatar: "🐲", style: "Line", medium: "Digital Pencil", likes: 145, svgType: "dragon" },
-        { id: 16, title: "Kyoto Alley", creator: "SketchyPro", avatar: "🐲", style: "Line", medium: "Digital Pencil", likes: 152, svgType: "alleys" },
-        { id: 17, title: "Landscape Study", creator: "WatercolorWitch", avatar: "🧙‍♀️", style: "Painting", medium: "Watercolor", likes: 204, svgType: "nature" },
-        { id: 18, title: "Landscape Study", creator: "LineArtMaster", avatar: "🎨", style: "Line", medium: "Digital Pencil", likes: 168, svgType: "nature" }
-    ];
+}, []);
+
+const loadPosts = async () => {
+
+    try {
+
+        const res = await axios.get(
+            `${API}/community/posts`
+        );
+
+        setArtworks(res.data);
+
+    } catch (err) {
+
+        console.log(err);
+
+    }
+
+};
 
     const handleLike = (id: number) => {
         alert("Liked artwork!");
@@ -94,12 +99,17 @@ export default function CommunityGallery() {
         }
     };
 
-    const filteredArtworks = artworks.filter((art) => {
-        const matchesStyle = art.style === activeStyle;
-        const matchesSearch = art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            art.creator.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesStyle && matchesSearch;
-    });
+const filteredArtworks = artworks.filter((art) => {
+
+    const caption = (art.caption || "").toLowerCase();
+    const username = (art.username || "").toLowerCase();
+
+    const matchesSearch =
+        caption.includes(searchQuery.toLowerCase()) ||
+        username.includes(searchQuery.toLowerCase());
+
+    return matchesSearch;
+});
 
     return (
         <div className="community-page-wrapper">
@@ -173,18 +183,22 @@ export default function CommunityGallery() {
                             <div className="corkboard-sticker-dot"></div>
 
                             <div className="polaroid-drawing-box">
-                                {renderArtSvg(art.svgType)}
+                                <img
+                                src={art.image_url}
+                                alt={art.caption}
+                                className="community-image"
+                            />
                             </div>
 
                             <div className="polaroid-caption">
                                 <div className="caption-creator-row">
-                                    <span className="creator-avatar">{art.avatar}</span>
-                                    <span className="creator-handle">@{art.creator}</span>
+                                    <span className="creator-avatar">👤</span>
+                                    <span className="creator-handle">@{art.username}</span>
                                 </div>
                                 <div className="caption-details-row">
-                                    <span className="artwork-title">{art.title}</span>
+                                    <span className="artwork-title">{art.caption}</span>
                                     <button className="like-badge-btn" onClick={() => handleLike(art.id)}>
-                                        ❤️ {art.likes}
+                                        ❤️  {art.likes ?? 0}
                                     </button>
                                 </div>
                             </div>

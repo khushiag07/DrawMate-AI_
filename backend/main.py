@@ -1,10 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,UploadFile, File, Form
 from pydantic import BaseModel
 from knowledge_agent import get_wikipedia_knowledge, get_webpage_text
 from vector_store import add_knowledge
 from agent import drawmate_agent
 from breakdown_agent import create_drawing_breakdown
-from fastapi import UploadFile, File
 import shutil
 from memory_agent import load_memory
 from vision_agent import analyze_drawing
@@ -14,7 +13,6 @@ from master_agent import run_master_agent
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from image.cleanup import cleanup_old_images, limit_cache_size
-from fastapi import UploadFile, File, Form
 from community.upload_post import upload_post
 from community.get_posts import get_posts
 
@@ -153,13 +151,23 @@ def challenge():
     return {
         "challenge": result
     }
+
+
 @app.post("/chat")
-def chat(request: ChatRequest):
-    response = run_master_agent(request.message)
+async def chat(
+    message: str = Form(...),
+    files: list[UploadFile] = File([])
+):
+
+    uploaded = [f.filename for f in files]
 
     return {
-        "message": request.message,
-        "response": response
+        "reply": f"You asked: {message}",
+        "uploaded": uploaded,
+        "images": [
+            "/images/example1.jpg",
+            "/images/example2.jpg",
+        ],
     }
 app.mount(
     "/generated",

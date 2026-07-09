@@ -9,13 +9,53 @@ import {
   Circle,
   Sparkles,
 } from "lucide-react";
+import { useState } from "react";
+import { useChatStore } from "../stores/chatStore";
+import Sidebar from "../components/chat/Sidebar";
+import ChatArea from "../components/chat/ChatArea";
+
+
 
 export default function Home() {
+const [question, setQuestion] = useState("");
+const [chatMode, setChatMode] = useState(false);
+const startChat = useChatStore(
+  (s) => s.startChat
+);
+const askDrawMate = () => {
+  if (!question.trim()) return;
+
+  startChat(question);
+
+  setChatMode(true);
+
+  setQuestion("");
+};
+  if (chatMode) {
+    return (
+      <div className="w-full h-[calc(100vh-90px)] px-6 py-5">
+        <div className="flex h-full gap-8">
+          <div className="w-[340px] shrink-0">
+            <Sidebar />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <ChatArea />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="home-page">
 
       {/* Hero */}
-      <section className="hero-section">
+      <section
+  className={chatMode ? "chat-section" : "hero-section"}
+>
+        {!chatMode ? (
+          <>
 
         {/* Logo */}
         <div className="hero-logo">
@@ -42,10 +82,15 @@ export default function Home() {
 
           <Search className="search-icon" />
 
-          <input
-            type="text"
-            placeholder="Ask anything about drawing, anatomy, perspective..."
-          />
+         <input
+          type="text"
+          placeholder="Ask anything about drawing..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") askDrawMate();
+          }}
+        />
 
           <button className="canvas-btn">
 
@@ -55,11 +100,16 @@ export default function Home() {
 
           </button>
 
-          <button className="send-btn">
+          <button
+  className="send-btn"
+  onClick={askDrawMate}
+>
             <Send size={22} />
           </button>
 
         </div>
+        
+
 
         {/* Suggestion Chips */}
 
@@ -91,9 +141,29 @@ export default function Home() {
           </button>
 
         </div>
+        </>
+        ) : (
+          
+
+     <div className="flex gap-8 items-start">
+       <div className="w-[360px] flex-shrink-0">
+      <Sidebar />
+    </div>
+
+    <div className="flex-1">
+      <ChatArea />
+    </div>
+
+
+
+
+    </div>
+
+  )}
+      
+
 
       </section>
-
     </div>
   );
 }
