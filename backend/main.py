@@ -15,15 +15,15 @@ from fastapi.staticfiles import StaticFiles
 from image.cleanup import cleanup_old_images, limit_cache_size
 from community.upload_post import upload_post
 from community.get_posts import get_posts
-
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI(title="DrawMate AI Tutor")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:8080",
         "http://localhost:5173",
+        "http://127.0.0.1:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],

@@ -1,35 +1,46 @@
 import uuid
+import traceback
 from community.supabase_client import supabase
 
 
 def upload_post(image_file, username: str, caption: str):
-    # Generate unique filename
-    extension = image_file.filename.split(".")[-1]
-    filename = f"{uuid.uuid4()}.{extension}"
+    try:
+        extension = image_file.filename.split(".")[-1]
+        filename = f"{uuid.uuid4()}.{extension}"
 
-    # Read image bytes
-    image_bytes = image_file.file.read()
+        image_bytes = image_file.file.read()
 
-    # Upload to Supabase Storage
-    supabase.storage.from_("community-images").upload(
-        filename,
-        image_bytes,
-        {"content-type": image_file.content_type}
-    )
+        print("Uploading:", filename)
 
-    # Get public URL
-    image_url = supabase.storage.from_("community-images").get_public_url(filename)
+        upload_response = supabase.storage.from_("community-images").upload(
+            filename,
+            image_bytes,
+            {"content-type": image_file.content_type},
+        )
 
-    # Save post to database
-    data = (
-        supabase.table("community_posts")
-        .insert({
+        print("Upload response:", upload_response)
+
+        image_url = supabase.storage.from_("community-images").get_public_url(filename)
+
+        print("Public URL:", image_url)
+
+        post = {
             "username": username,
             "caption": caption,
             "image_url": image_url,
-            "likes": 0
-        })
-        .execute()
-    )
+            "likes": 0,
+        }
 
-    return data.data
+        data = (
+            supabase.table("community_posts")
+            .insert(post)
+            .execute()
+        )
+
+        print(data)
+
+        return data.data
+
+    except Exception:
+        traceback.print_exc()
+        raise
