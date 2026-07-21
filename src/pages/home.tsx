@@ -13,8 +13,12 @@ import { useState } from "react";
 import { useChatStore } from "../stores/chatStore";
 import Sidebar from "../components/chat/Sidebar";
 import ChatArea from "../components/chat/ChatArea";
-
-
+import {
+  MessageSquare,
+  GraduationCap,
+  Image,
+  Heart,
+} from "lucide-react";
 
 export default function Home() {
 const [question, setQuestion] = useState("");
@@ -87,6 +91,7 @@ const askDrawMate = () => {
         </div>
 
         {/* Search Card */}
+        <div className="hero-content">
 
         <div className="search-card">
 
@@ -150,6 +155,7 @@ const askDrawMate = () => {
             AI Feedback
           </button>
 
+        </div>
         </div>
         </>
         ) : (

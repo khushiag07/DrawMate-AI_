@@ -1,60 +1,51 @@
 /* ==============================
    HOME PAGE
 ============================== */
+.hero-content{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+.home-page{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
 
-.home-page {
-    width: 100%;
-    min-height: calc(100vh - 90px);
-
-    display: flex;
-    justify-content: center;
-
-    /* Instead of center */
-    align-items: flex-start;
-
-    padding-top: 80px;   /* Adjust this value */
-    padding-bottom: 30px;
+    padding-top:0px;
 }
 
 /* ==============================
    HERO SECTION
 ============================== */
 
-.hero-section{
-    width:100%;
-    min-height:calc(100vh - 90px);
-
-    display:flex;
-    flex-direction:column;
-
-    margin-top:-60px;
-}
 
 /* ==============================
    LOGO
 ============================== */
-.chat-layout{
+.chat-layout {
+    width: 100%;
+    height: calc(100vh - 90px);
 
-width:100%;
-
-height:calc(100vh - 90px);
-
-padding:20px 24px;
-
-display:flex;
+    display: flex;
+    justify-content: center;   /* Horizontal center */
+    align-items: center;       /* Vertical center */
 }
+
+
 .hero-logo {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 22px;
+    margin-bottom: 10px;
 }
 
 .logo-icon {
     color: #432715;
     width: 46px;
     height: 46px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 .hero-logo h1 {
     font-family: Georgia, serif;
@@ -64,45 +55,60 @@ display:flex;
     color: #402718;
     margin-bottom: 10px;
 }
-.hero-logo p {
-    font-size: 16px;
-    line-height: 1.6;
-    max-width: 520px;
-    color: #4e4035;
-}
-.chat-section{
-    width:100%;
-    height:calc(100vh - 90px);
 
-    max-width:none;
-
-    display:flex;
-    padding:18px 24px;
-}
-/* ==============================
+/*======================
    SEARCH CARD
 ============================== */
+.hero-section{
+    width:100%;
+    max-width:1200px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    justify-content:flex-start;
+
+    min-height:auto;
+    padding-top:50px;
+    padding-bottom:40px;
+
+}
+
+
+@media(max-width:1100px){
+
+.features-section{
+
+    grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:700px){
+
+.features-section{
+
+    grid-template-columns:1fr;
+}
+
+}
+
+.chat-section{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
 .search-card {
     width: 100%;
-    max-width: 640px;
-    height: 72px;
+    max-width: 720px;
 
     display: flex;
     align-items: center;
 
-    padding: 0 16px;
-
-    border-radius: 18px;
-
-    background: #FAF3E8;
-
-    border: 2px solid #D7C2A7;
-
-    box-shadow:
-        0 8px 16px rgba(0,0,0,.10),
-        inset 0 1px 2px rgba(255,255,255,.8);
-
-    margin-bottom: 22px;
+    margin-top: 40px;   /* Increase this value */
 }
 /* Search Icon */
 .search-icon {
@@ -154,11 +160,7 @@ display:flex;
     width: 14px;
     height: 14px;
 }
-.canvas-btn svg{
 
-    width:16px;
-    height:16px;
-}
 .canvas-btn:hover{
 
     background:#754320;
@@ -191,11 +193,7 @@ display:flex;
     width: 16px;
     height: 16px;
 }
-.send-btn svg{
 
-    width:18px;
-    height:18px;
-}
 
 .send-btn:hover{
 
@@ -212,12 +210,12 @@ display:flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
-    max-width: 700px;
+    max-width: 900px;
 }
 .chip {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 16px;
 
     padding: 8px 14px;
 
@@ -242,10 +240,6 @@ display:flex;
     width: 15px;
     height: 15px;
 }
-.chip-container{
-
-    gap:12px;
-} 
 
 .chip:hover{
 
@@ -314,6 +308,19 @@ display:flex;
     font-size:42px;
 
 }
+.search-card{
+
+    background:#FAF3E8;
+
+    border:2px solid #D7C2A7;
+
+    border-radius:20px;
+
+    padding:14px 18px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.08);
+}
 
 .hero-logo p{
 
@@ -334,10 +341,9 @@ display:flex;
 
 .search-card input{
 
-    width:100%;
+    height:48px;
 
-    font-size:20px;
-
+    font-size:17px;
 }
 
 .canvas-btn{
@@ -361,6 +367,13 @@ display:flex;
 /* ===========================================
    DRAWMATE RESULT
 =========================================== */
+.canvas-btn,
+.send-btn,
+.chip,
+.step-card{
+
+    transition:.3s ease;
+}
 
 .loading {
     margin-top: 30px;

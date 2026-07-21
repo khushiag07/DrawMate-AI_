@@ -1,5 +1,6 @@
 import "./Profile.css";
-
+import { useEffect, useState } from "react";
+import { supabase } from ".././lib/supabase";
 import {
   Pencil,
   Brush,
@@ -12,7 +13,98 @@ import {
 } from "lucide-react";
 
 export default function Profile() {
+  const [editing, setEditing] = useState(false);
+const [displayName, setDisplayName] = useState("");
+const [username, setUsername] = useState("");
+const [bio, setBio] = useState("");
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+  loadProfile();
+}, []);
+
+async function loadProfile() {
+  setLoading(true);
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    setLoading(false);
+    return;
+  }
+
+console.log("User:", user);
+
+const { data, error } = await supabase
+  .from("profiles")
+  .select("*")
+  .eq("id", user?.id)
+  .single();
+
+console.log("Profile:", data);
+console.log("Error:", error);
+
+  if (!error) {
+    setProfile(data);
+    setDisplayName(data.display_name);
+setUsername(data.username);
+setBio(data.bio || "");
+  }
+
+  setLoading(false);
+
+}
+async function saveProfile() {
+
+const {
+data:{user}
+}=await supabase.auth.getUser();
+
+if(!user) return;
+
+const {error}=await supabase
+
+.from("profiles")
+
+.update({
+
+display_name:displayName,
+
+username:username,
+
+bio:bio,
+
+updated_at:new Date()
+
+})
+
+.eq("id",user.id);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+setEditing(false);
+
+loadProfile();
+
+}
+if (loading) {
+  return <h2>Loading profile...</h2>;
+}
+
+if (!profile) {
+  return <h2>No profile found.</h2>;
+}
   return (
+    
+    
     <div className="profile-page">
 
       <h1 className="profile-title">
@@ -34,27 +126,31 @@ export default function Profile() {
           <div className="profile-user">
 
             <img
-              src="https://i.pravatar.cc/300?img=32"
+              src={
+  profile?.avatar_url ||
+  "https://i.pravatar.cc/300"
+}
               alt="profile"
               className="profile-avatar"
             />
 
-            <h3>ArtisticSoul</h3>
+            <h3>{profile?.display_name}</h3>
 
-            <p>@ArtisticSoul_01</p>
+            <p>@{profile?.username}</p>
 
           </div>
 
-          <p className="profile-description">
-            Digital and mixed-media artist passionate about
-            creating expressive illustrations, fantasy
-            characters and cozy environments. I enjoy learning
-            with AI-powered feedback and sharing my creations
-            with the DrawMate community.
-          </p>
+<p className="profile-description">
+  {profile?.bio || "No bio yet"}
+</p>
 
           <p className="joined">
-            Joined October 2023
+            <p className="joined">
+  Joined{" "}
+  {profile?.created_at
+    ? new Date(profile.created_at).toLocaleDateString()
+    : ""}
+</p>
           </p>
 
           <hr />
@@ -65,12 +161,12 @@ export default function Profile() {
 
             <div>
               <h4>Followers</h4>
-              <span>342</span>
+              <span>{profile?.followers ?? 0}</span>
             </div>
 
             <div>
               <h4>Following</h4>
-              <span>128</span>
+              <span>{profile?.following ?? 0}</span>
             </div>
 
             <div>
@@ -145,7 +241,12 @@ export default function Profile() {
                 alt="Artwork 6"
               />
             </div>
-
+<button
+  className="edit-profile-btn"
+  onClick={() => setEditing(true)}
+>
+  Edit Profile
+</button>
           </div>
 
         </section>
@@ -314,6 +415,37 @@ export default function Profile() {
           </div>
 
         </section>
+        {
+editing && (
+
+<div className="edit-profile">
+
+<input
+value={displayName}
+onChange={(e)=>setDisplayName(e.target.value)}
+placeholder="Display Name"
+/>
+
+<input
+value={username}
+onChange={(e)=>setUsername(e.target.value)}
+placeholder="Username"
+/>
+
+<textarea
+value={bio}
+onChange={(e)=>setBio(e.target.value)}
+placeholder="Bio"
+/>
+
+<button onClick={saveProfile}>
+Save
+</button>
+
+</div>
+
+)
+}
                 {/* ===========================
             ACHIEVEMENTS
         =========================== */}

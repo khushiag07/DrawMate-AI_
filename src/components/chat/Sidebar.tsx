@@ -26,8 +26,7 @@ export default function Sidebar() {
       h-[760px]
       bg-[#F5EFE7]
       rounded-[28px]
-      border
-      border-[#E6D8C9]
+       border-[#E6D8C9]
       shadow-[0_12px_35px_rgba(0,0,0,.08)]
       flex
       flex-col
