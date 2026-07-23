@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Navbar.css";
 import { supabase } from ".././lib/supabase";
 interface NavbarProps {
@@ -17,11 +17,30 @@ const [email, setEmail] = useState("");
 const [signupUsername, setSignupUsername] = useState("");
 const [password, setPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
+const [user, setUser] = useState<any>(null);
+useEffect(() => {
+  supabase.auth.getUser().then(({ data }) => {
+    setUser(data.user);
+    alert("Account created successfully!");
+
+setUser(data.user);
+setShowAuth(false);
+  });
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null);
+  });
+
+  return () => subscription.unsubscribe();
+}, []);
 
 const [loginEmail, setLoginEmail] = useState("");
 const [loginPassword, setLoginPassword] = useState("");
 async function handleSignup(e: React.FormEvent) {
   e.preventDefault();
+  
 
   if (password !== confirmPassword) {
     alert("Passwords do not match");
@@ -33,10 +52,15 @@ async function handleSignup(e: React.FormEvent) {
     password,
   });
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+if (error) {
+  alert(error.message);
+  return;
+}
+
+setUser(data.user);
+setShowAuth(false);
+
+alert("Login Successful!");
 
   if (data.user) {
     const { error: profileError } = await supabase
@@ -57,6 +81,10 @@ async function handleSignup(e: React.FormEvent) {
 
   setShowAuth(false);
 }
+async function handleLogout() {
+  await supabase.auth.signOut();
+  setUser(null);
+}
 
 async function handleLogin(e: React.FormEvent) {
   e.preventDefault();
@@ -65,17 +93,17 @@ async function handleLogin(e: React.FormEvent) {
   console.log("Login Password:", loginPassword);
 
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: loginEmail,
-    password: loginPassword,
-  });
+  email: loginEmail,
+  password: loginPassword,
+});
 
-  console.log("Data:", data);
-  console.log("Error:", error);
+if (error) {
+  alert(error.message);
+  return;
+}
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+setUser(data.user);
+setShowAuth(false);
 
   alert("Login Successful!");
 }
@@ -110,9 +138,37 @@ async function handleLogin(e: React.FormEvent) {
 
         {/* Auth Buttons */}
         <div className="authButtons">
-          <button className="loginBtn" onClick={() => { setAuthMode("login"); setShowAuth(true); }}>Log in</button>
-          <button className="signupBtn" onClick={() => { setAuthMode("signup"); setShowAuth(true); }}>Sign up</button>
-        </div>
+  {!user ? (
+    <>
+      <button
+        className="loginBtn"
+        onClick={() => {
+          setAuthMode("login");
+          setShowAuth(true);
+        }}
+      >
+        Log in
+      </button>
+
+      <button
+        className="signupBtn"
+        onClick={() => {
+          setAuthMode("signup");
+          setShowAuth(true);
+        }}
+      >
+        Sign up
+      </button>
+    </>
+  ) : (
+    <button
+      className="profileBtn"
+      onClick={() => onChooseTab("Profile")}
+    >
+      👤 Profile
+    </button>
+  )}
+</div>
       </nav>
 
       {/* Sketchbook Overlay Area */}
